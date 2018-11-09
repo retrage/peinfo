@@ -8,9 +8,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 
-typedef void (*func_t)();
-
-static func_t load_file(char *head)
+static void load_file(char *head)
 {
     int i;
     IMAGE_DOS_HEADER *doshdr;
@@ -18,18 +16,15 @@ static func_t load_file(char *head)
     IMAGE_FILE_HEADER *fhdr;
     IMAGE_OPTIONAL_HEADER *opthdr;
     IMAGE_SECTION_HEADER *sechdr;
-    func_t f;
 
     doshdr = (IMAGE_DOS_HEADER *)head;
     if (doshdr->e_magic != MAGIC_MZ) {
         fprintf(stderr, "This file is not supported.\n");
-        return NULL;
     }
 
     nthdr = (IMAGE_NT_HEADERS *)(head + doshdr->e_lfanew);
     if (nthdr->Signature != MAGIC_PE) {
         fprintf(stderr, "This file is not supported.\n");
-        return NULL;
     }
 
     fhdr = &nthdr->FileHeader;
@@ -45,7 +40,6 @@ static func_t load_file(char *head)
 
     if (!(fhdr->Characteristics & IMAGE_FILE_EXECUTABLE_IMAGE)) {
         fprintf(stderr, "The file must be executable.\n");
-        return NULL;
     }
     
     if (fhdr->Characteristics & IMAGE_FILE_32BIT_MACHINE) {
@@ -89,7 +83,7 @@ static func_t load_file(char *head)
     fprintf(stdout, "AddressOfEntryPoint: %x\n",
                         opthdr->AddressOfEntryPoint);
 
-    fprintf(stdout, "ImageBase: %llx\n",
+    fprintf(stdout, "ImageBase: %x\n",
                         opthdr->ImageBase);
 
     fprintf(stdout, "SectionAlignment: %x\n",
@@ -104,12 +98,11 @@ static func_t load_file(char *head)
     fprintf(stdout, "SizeOfHeaders: %x\n",
                         opthdr->SizeOfHeaders);
 
-    fprintf(stdout, "sechdr: 0x%lx\n", sizeof(IMAGE_DOS_HEADER) + sizeof(IMAGE_NT_HEADERS));
     for (i=0; i<fhdr->NumberOfSections; i++) {
         fprintf(stdout, "Section %d\n", i);
-        sechdr = (IMAGE_SECTION_HEADER *)(head + sizeof(IMAGE_DOS_HEADER) + sizeof(IMAGE_NT_HEADERS) + 0x48 + sizeof(IMAGE_SECTION_HEADER) * i);
-        //sechdr = (IMAGE_SECTION_HEADER *)(head + 0x180 + sizeof(IMAGE_SECTION_HEADER) * i);
-        //sechdr = (IMAGE_SECTION_HEADER *)(opthdr + sizeof(IMAGE_OPTIONAL_HEADER) + 0x18 + sizeof(IMAGE_SECTION_HEADER) * i);
+        sechdr = (IMAGE_SECTION_HEADER *)
+          (head + doshdr->e_lfanew
+           + sizeof(IMAGE_NT_HEADERS) + sizeof(IMAGE_SECTION_HEADER) * i);
         fprintf(stdout, "\tName: %s\n",
                                 sechdr->Name);
         fprintf(stdout, "\tVirtualSize: %x\n",
@@ -161,12 +154,6 @@ static func_t load_file(char *head)
         fprintf(stdout, "\n");
 
     }
-    
-    /*
-    f = (func_t)opthdr->ImageBase;
-    */
-    return f;
-
 }
 
 int main(int argc, char *argv[])
@@ -174,7 +161,6 @@ int main(int argc, char *argv[])
     int fd;
     struct stat sb;
     char *head;
-    func_t f;
     static char filename[128];
 
     if (argc < 2) {
