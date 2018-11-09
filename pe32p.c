@@ -1,4 +1,4 @@
-#include "pe.h"
+#include "pe32p.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +8,9 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 
-static void* load_file(char *head)
+typedef void (*func_t)();
+
+static func_t load_file(char *head)
 {
     int i;
     IMAGE_DOS_HEADER *doshdr;
@@ -16,6 +18,7 @@ static void* load_file(char *head)
     IMAGE_FILE_HEADER *fhdr;
     IMAGE_OPTIONAL_HEADER *opthdr;
     IMAGE_SECTION_HEADER *sechdr;
+    func_t f;
 
     doshdr = (IMAGE_DOS_HEADER *)head;
     if (doshdr->e_magic != MAGIC_MZ) {
@@ -44,7 +47,7 @@ static void* load_file(char *head)
         fprintf(stderr, "The file must be executable.\n");
         return NULL;
     }
-    
+
     if (fhdr->Characteristics & IMAGE_FILE_32BIT_MACHINE) {
         fprintf(stdout, "32-bit Architecture\n");
     }
@@ -62,25 +65,56 @@ static void* load_file(char *head)
     }
 
 
+    if (fhdr->Characteristics & IMAGE_FILE_32BIT_MACHINE) {
+    } else {
+    }
+
     opthdr = &nthdr->OptionalHeader;
-    if (opthdr->Magic != 0x20b) {
-        fprintf(stderr, "This format is not supported. Magic: %x\n",
-                                                            opthdr->Magic);
-        exit(1);
+    switch(opthdr->Magic) {
+        case 0x10b:
+            fprintf(stdout, "PE32\n");
+            break;
+        case 0x20b:
+            fprintf(stdout, "PE+\n");
+            break;
+        case 0x107:
+            fprintf(stdout, "ROM\n");
+            break;
+        default:
+            fprintf(stderr, "Magic not matched\n");
+            exit(1);
+            break;
     }
 
     fprintf(stdout, "AddressOfEntryPoint: %x\n",
                         opthdr->AddressOfEntryPoint);
 
+    fprintf(stdout, "ImageBase: %x\n",
+                        opthdr->ImageBase);
+
+    fprintf(stdout, "SectionAlignment: %x\n",
+                        opthdr->SectionAlignment);
+
+    fprintf(stdout, "FileAlignment: %x\n",
+                        opthdr->FileAlignment);
+
+    fprintf(stdout, "SizeOfImage: %x\n",
+                        opthdr->SizeOfImage);
+
+    fprintf(stdout, "SizeOfHeaders: %x\n",
+                        opthdr->SizeOfHeaders);
+
     for (i=0; i<fhdr->NumberOfSections; i++) {
         fprintf(stdout, "Section %d\n", i);
         sechdr = (IMAGE_SECTION_HEADER *)
-            (head + doshdr->e_lfanew + 
-                sizeof(IMAGE_NT_HEADERS)+ sizeof(IMAGE_SECTION_HEADER)*i);
+            (head + doshdr->e_lfanew
+             + sizeof(IMAGE_NT_HEADERS) + sizeof(IMAGE_SECTION_HEADER) * i);
         fprintf(stdout, "\tName: %s\n",
                                 sechdr->Name);
         fprintf(stdout, "\tVirtualSize: %x\n",
                                 sechdr->Misc.VirtualSize);
+        fprintf(stdout, "\tVirtualAddress: %x\n",
+                                sechdr->VirtualAddress);
         fprintf(stdout, "\tSizeOfRawData: %x\n",
                                 sechdr->SizeOfRawData);
         fprintf(stdout, "\tPointerToRawData: %x\n",
@@ -126,8 +160,12 @@ static void* load_file(char *head)
         fprintf(stdout, "\n");
 
     }
+    
+    /*
+    f = (func_t)opthdr->ImageBase;
+    */
+    return f;
 
-    return (void *)1;
 }
 
 int main(int argc, char *argv[])
@@ -135,8 +173,8 @@ int main(int argc, char *argv[])
     int fd;
     struct stat sb;
     char *head;
+    func_t f;
     static char filename[128];
-    int f;
 
     if (argc < 2) {
         fprintf(stderr, "Usage: %s input\n", argv[0]);

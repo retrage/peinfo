@@ -3,11 +3,12 @@
 
 #include <stdint.h>
 
-
 typedef uint8_t BYTE;
 typedef uint16_t WORD;
 typedef uint32_t DWORD;
 typedef int32_t LONG;
+typedef uint64_t ULONGLONG;
+typedef int64_t LONGLONG;
 
 #define MAGIC_MZ 0x5a4d
 
@@ -67,11 +68,34 @@ typedef struct _IMAGE_OPTIONAL_HEADER {
     DWORD   SizeOfUninitializedData;
     DWORD   AddressOfEntryPoint;
     DWORD   BaseOfCode;
+    DWORD   BaseOfData;
+
+    DWORD   ImageBase;
+    DWORD   SectionAlignment;
+    DWORD   FileAlignment;
+    WORD    MajorOperatingSystemVersion;
+    WORD    MinorOperatingSystemVersion;
+    WORD    MajorImageVersion;
+    WORD    MinorImageVersion;
+    WORD    MajorSubsystemVersion;
+    WORD    MinorSubsystemVersion;
+    DWORD   Win32VersionValue;
+    DWORD   SizeOfImage;
+    DWORD   SizeOfHeaders;
+    DWORD   CheckSum;
+    WORD    Subsystem;
+    WORD    DllCharacteristics;
+    DWORD   SizeOfStackReserve;
+    DWORD   SizeOfStackCommit;
+    DWORD   SizeOfHeapReserve;
+    DWORD   SizeOfHeapCommit;
+    DWORD   LoaderFlags;
+    DWORD   NumberOfRvaAndSizes;
     IMAGE_DATA_DIRECTORY
             DataDirecroty[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 } IMAGE_OPTIONAL_HEADER, *PIMAGE_OPTIONAL_HEADER;
 
-typedef struct _IMAGE_NT_HEADERS {
+typedef struct _PE32_IMAGE_NT_HEADERS {
     DWORD                   Signature;
     IMAGE_FILE_HEADER       FileHeader;
     IMAGE_OPTIONAL_HEADER   OptionalHeader;
