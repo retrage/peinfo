@@ -28,10 +28,10 @@ static void load_file(char *head)
     }
 
     fhdr = &nthdr->FileHeader;
-    fprintf(stdout, "Machine: %x\n", fhdr->Machine);
-    fprintf(stdout, "Number of Section: %d\n", fhdr->NumberOfSections);
-    fprintf(stdout, "Time Stamp: %d\n", fhdr->TimeDateStamp);
-    fprintf(stdout, "Size of Optional Header: %d\n",
+    fprintf(stdout, "Machine:\t\t\t0x%04x\n", fhdr->Machine);
+    fprintf(stdout, "Number of Section:\t\t%d\n", fhdr->NumberOfSections);
+    fprintf(stdout, "Time Stamp:\t\t\t%d\n", fhdr->TimeDateStamp);
+    fprintf(stdout, "Size of Optional Header:\t0x%04x\n",
                                         fhdr->SizeOfOptionalHeader);
 
     if (fhdr->Characteristics & IMAGE_FILE_RELOCS_STRIPPED) {
@@ -80,22 +80,22 @@ static void load_file(char *head)
             break;
     }
 
-    fprintf(stdout, "AddressOfEntryPoint: %x\n",
+    fprintf(stdout, "AddressOfEntryPoint:\t\t0x%08x\n",
                         opthdr->AddressOfEntryPoint);
 
-    fprintf(stdout, "ImageBase: %llx\n",
+    fprintf(stdout, "ImageBase:\t\t\t0x%016llx\n",
                         opthdr->ImageBase);
 
-    fprintf(stdout, "SectionAlignment: %x\n",
+    fprintf(stdout, "SectionAlignment:\t\t0x%08x\n",
                         opthdr->SectionAlignment);
 
-    fprintf(stdout, "FileAlignment: %x\n",
+    fprintf(stdout, "FileAlignment:\t\t\t0x%08x\n",
                         opthdr->FileAlignment);
 
-    fprintf(stdout, "SizeOfImage: %x\n",
+    fprintf(stdout, "SizeOfImage:\t\t\t0x%08x\n",
                         opthdr->SizeOfImage);
 
-    fprintf(stdout, "SizeOfHeaders: %x\n",
+    fprintf(stdout, "SizeOfHeaders:\t\t\t0x%08x\n",
                         opthdr->SizeOfHeaders);
 
     for (i=0; i<fhdr->NumberOfSections; i++) {
@@ -103,26 +103,26 @@ static void load_file(char *head)
         sechdr = (IMAGE_SECTION_HEADER *)
             (head + doshdr->e_lfanew
              + sizeof(IMAGE_NT_HEADERS) + sizeof(IMAGE_SECTION_HEADER) * i);
-        fprintf(stdout, "\tName: %s\n",
+        fprintf(stdout, "\tName:\t\t\t%s\n",
                                 sechdr->Name);
-        fprintf(stdout, "\tVirtualSize: %x\n",
+        fprintf(stdout, "\tVirtualSize:\t\t0x%08x\n",
                                 sechdr->Misc.VirtualSize);
-        fprintf(stdout, "\tVirtualAddress: %x\n",
+        fprintf(stdout, "\tVirtualAddress:\t\t0x%08x\n",
                                 sechdr->VirtualAddress);
-        fprintf(stdout, "\tSizeOfRawData: %x\n",
+        fprintf(stdout, "\tSizeOfRawData:\t\t0x%08x\n",
                                 sechdr->SizeOfRawData);
-        fprintf(stdout, "\tPointerToRawData: %x\n",
+        fprintf(stdout, "\tPointerToRawData:\t0x%08x\n",
                                 sechdr->PointerToRawData);
-        fprintf(stdout, "\tPointerToRelocations: %x\n",
+        fprintf(stdout, "\tPointerToRelocations:\t0x%08x\n",
                                 sechdr->PointerToRelocations);
-        fprintf(stdout, "\tPointerToLinenumbers: %x\n",
+        fprintf(stdout, "\tPointerToLinenumbers:\t0x%08x\n",
                                 sechdr->PointerToLinenumbers);
-        fprintf(stdout, "\tNumberOfRelocations: %d\n",
+        fprintf(stdout, "\tNumberOfRelocations:\t%d\n",
                                 sechdr->NumberOfRelocations);
-        fprintf(stdout, "\tNumberOfLinenumbers: %d\n",
+        fprintf(stdout, "\tNumberOfLinenumbers:\t%d\n",
                                 sechdr->NumberOfLinenumbers);
         fprintf(stdout, "\tCharacteristics:");
-        fprintf(stdout, " %x ", sechdr->Characteristics);
+        fprintf(stdout, "\t%x ", sechdr->Characteristics);
 
         if (sechdr->Characteristics & IMAGE_SCN_MEM_READ) {
             fprintf(stdout, "r");
