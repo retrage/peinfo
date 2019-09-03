@@ -98,6 +98,13 @@ static void load_file(char *head)
     fprintf(stdout, "SizeOfHeaders: %x\n",
                         opthdr->SizeOfHeaders);
 
+    for (i = 0; i < opthdr->NumberOfRvaAndSizes; i++) {
+      fprintf(stdout, "DataDirectory %d\n", i);
+      IMAGE_DATA_DIRECTORY *datadir = &opthdr->DataDirectory[i];
+      fprintf(stdout, "\tVirtualAddress: %x\n", datadir->VirtualAddress);
+      fprintf(stdout, "\tSize: %x\n", datadir->Size);
+    }
+
     for (i=0; i<fhdr->NumberOfSections; i++) {
         fprintf(stdout, "Section %d\n", i);
         sechdr = (IMAGE_SECTION_HEADER *)
