@@ -80,10 +80,16 @@ static void load_file(char *head)
             break;
     }
 
-    fprintf(stdout, "AddressOfEntryPoint:\t\t0x%08x\n",
+    fprintf(stdout, "SizeOfCode: %x\n",
+                        opthdr->SizeOfCode);
+
+    fprintf(stdout, "AddressOfEntryPoint: %x\n",
                         opthdr->AddressOfEntryPoint);
 
-    fprintf(stdout, "ImageBase:\t\t\t0x%016llx\n",
+    fprintf(stdout, "BaseOfCode: %x\n",
+                        opthdr->BaseOfCode);
+
+    fprintf(stdout, "ImageBase: %lx\n",
                         opthdr->ImageBase);
 
     fprintf(stdout, "SectionAlignment:\t\t0x%08x\n",
@@ -98,12 +104,20 @@ static void load_file(char *head)
     fprintf(stdout, "SizeOfHeaders:\t\t\t0x%08x\n",
                         opthdr->SizeOfHeaders);
 
+    for (i = 0; i < opthdr->NumberOfRvaAndSizes; i++) {
+      fprintf(stdout, "DataDirectory %d\n", i);
+      IMAGE_DATA_DIRECTORY *datadir = &opthdr->DataDirectory[i];
+      fprintf(stdout, "\tVirtualAddress: %x\n", datadir->VirtualAddress);
+      fprintf(stdout, "\tSize: %x\n", datadir->Size);
+    }
+
     for (i=0; i<fhdr->NumberOfSections; i++) {
         fprintf(stdout, "Section %d\n", i);
         sechdr = (IMAGE_SECTION_HEADER *)
-            (head + doshdr->e_lfanew
-             + sizeof(IMAGE_NT_HEADERS) + sizeof(IMAGE_SECTION_HEADER) * i);
-        fprintf(stdout, "\tName:\t\t\t%s\n",
+            ((char *)nthdr + sizeof(IMAGE_NT_HEADERS)
+             + sizeof(IMAGE_DATA_DIRECTORY) * opthdr->NumberOfRvaAndSizes
+             + sizeof(IMAGE_SECTION_HEADER) * i);
+        fprintf(stdout, "\tName: %s\n",
                                 sechdr->Name);
         fprintf(stdout, "\tVirtualSize:\t\t0x%08x\n",
                                 sechdr->Misc.VirtualSize);
