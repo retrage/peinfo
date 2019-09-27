@@ -1,4 +1,4 @@
-# peheader: Portable Executable Header Viewer
+# peinfo: Portable Executable Header Viewer
 
 A Portable Executable header information viewer for \*nix.
 
@@ -8,7 +8,7 @@ A Portable Executable header information viewer for \*nix.
 $ make
 ```
 
-Above command will build `pe32` and `pe32p`.
+The above command will generate the `peinfo` executable.
 
 ## License
 
