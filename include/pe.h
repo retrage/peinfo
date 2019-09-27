@@ -51,6 +51,11 @@ typedef struct _IMAGE_FILE_HEADER {
 #define IMAGE_FILE_SYSTEM                   0x1000
 #define IMAGE_FILE_DLL                      0x2000
 
+typedef struct _PE32_IMAGE_NT_HEADERS {
+    DWORD                   Signature;
+    IMAGE_FILE_HEADER       FileHeader;
+} IMAGE_NT_HEADERS, *PIMAGE_NT_HEADERS;
+
 typedef struct _IMAGE_DATA_DIRECTORY {
     DWORD   VirtualAddress;
     DWORD   Size;
@@ -59,7 +64,58 @@ typedef struct _IMAGE_DATA_DIRECTORY {
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES    16
 #define MAGIC_PE                            0x00004550
 
-typedef struct _IMAGE_OPTIONAL_HEADER {
+#define MAGIC_PE32                          0x010b
+#define MAGIC_PE32P                         0x020b
+#define MAGIC_ROM                           0x0107
+
+typedef struct _OPT_HDR_STD {
+    WORD    Magic;
+    BYTE    MajorLinkerVersion;
+    BYTE    MinorLinkerVersion;
+    DWORD   SizeOfCode;
+    DWORD   SizeOfInitializedData;
+    DWORD   SizeOfUninitializedData;
+    DWORD   AddressOfEntryPoint;
+    DWORD   BaseOfCode;
+    DWORD   BaseOfData; /* XXX: This field is absent in PE32+ */
+} OPT_HDR_STD, *POPT_HDR_STD;
+
+typedef struct _IMAGE_PE32_OPTIONAL_HEADER {
+    WORD    Magic;
+    BYTE    MajorLinkerVersion;
+    BYTE    MinorLinkerVersion;
+    DWORD   SizeOfCode;
+    DWORD   SizeOfInitializedData;
+    DWORD   SizeOfUninitializedData;
+    DWORD   AddressOfEntryPoint;
+    DWORD   BaseOfCode;
+    DWORD   BaseOfData;
+
+    DWORD   ImageBase;
+    DWORD   SectionAlignment;
+    DWORD   FileAlignment;
+    WORD    MajorOperatingSystemVersion;
+    WORD    MinorOperatingSystemVersion;
+    WORD    MajorImageVersion;
+    WORD    MinorImageVersion;
+    WORD    MajorSubsystemVersion;
+    WORD    MinorSubsystemVersion;
+    DWORD   Win32VersionValue;
+    DWORD   SizeOfImage;
+    DWORD   SizeOfHeaders;
+    DWORD   CheckSum;
+    WORD    Subsystem;
+    WORD    DllCharacteristics;
+    DWORD   SizeOfStackReserve;
+    DWORD   SizeOfStackCommit;
+    DWORD   SizeOfHeapReserve;
+    DWORD   SizeOfHeapCommit;
+    DWORD   LoaderFlags;
+    DWORD   NumberOfRvaAndSizes;
+    IMAGE_DATA_DIRECTORY DataDirectory[0];
+} IMAGE_PE32_OPTIONAL_HEADER, *PIMAGE_PE32_OPTIONAL_HEADER;
+
+typedef struct _IMAGE_PE32P_OPTIONAL_HEADER {
     WORD    Magic;
     BYTE    MajorLinkerVersion;
     BYTE    MinorLinkerVersion;
@@ -90,15 +146,8 @@ typedef struct _IMAGE_OPTIONAL_HEADER {
     ULONGLONG SizeOfHeapCommit;
     DWORD   LoaderFlags;
     DWORD   NumberOfRvaAndSizes;
-    IMAGE_DATA_DIRECTORY
-            DataDirectory[0];
-} IMAGE_OPTIONAL_HEADER, *PIMAGE_OPTIONAL_HEADER;
-
-typedef struct _PE32_IMAGE_NT_HEADERS {
-    DWORD                   Signature;
-    IMAGE_FILE_HEADER       FileHeader;
-    IMAGE_OPTIONAL_HEADER   OptionalHeader;
-} IMAGE_NT_HEADERS, *PIMAGE_NT_HEADERS;
+    IMAGE_DATA_DIRECTORY DataDirectory[0];
+} IMAGE_PE32P_OPTIONAL_HEADER, *PIMAGE_PE32P_OPTIONAL_HEADER;
 
 #define IMAGE_SIZEOF_SHORT_NAME 8
 

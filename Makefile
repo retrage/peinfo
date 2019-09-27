@@ -1,19 +1,17 @@
-CFLAGS=-Wall -Iinclude -std=c11 -O2
+CFLAGS=-Wall -Iinclude -std=c11 -O0 -g
 SRCS=$(wildcard *.c)
-HDRS=$(wildcard include/*.h)
 OBJS=$(SRCS:.c=.o)
+HDRS=$(wildcard include/*.h)
+TARGET=peinfo
 
-all: pe32 pe32p
+all: $(TARGET)
 
-pe32: pe32.o
-	cc -o $@ $^
-
-pe32p: pe32p.o
-	cc -o $@ $^
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^
 
 $(OBJS): $(HDRS)
 
 clean:
-	rm -f pe32 pe32p *.o
+	rm -f $(TARGET) $(OBJS)
 
-.PHONY: clean
+.PHONY: all clean
