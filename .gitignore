@@ -1,3 +1,4 @@
 peinfo
 *.o
 bin/*
+*.swp
