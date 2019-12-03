@@ -11,8 +11,17 @@ static char *format_str(char *buf, size_t size, void *value, int format)
     case FMT_STR:
       snprintf(buf, size, "%s", (char *)value);
       break;
-    case FMT_DEC:
-      snprintf(buf, size, "%d", *(int *)value);
+    case FMT_DEC1:
+      snprintf(buf, size, "%d", *(char *)value);
+      break;
+    case FMT_DEC2:
+      snprintf(buf, size, "%d", *(short *)value);
+      break;
+    case FMT_DEC4:
+      snprintf(buf, size,  "%d", *(int *)value);
+      break;
+    case FMT_DEC8:
+      snprintf(buf, size, "%lld", *(long long int *)value);
       break;
     case FMT_HEX2:
       snprintf(buf, size, "0x%04x", *(unsigned short *)value);

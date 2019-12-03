@@ -10,7 +10,10 @@
 enum {
   FMT_NONE = 0,
   FMT_STR,
-  FMT_DEC,
+  FMT_DEC1,
+  FMT_DEC2,
+  FMT_DEC4,
+  FMT_DEC8,
   FMT_HEX2,
   FMT_HEX4,
   FMT_HEX8

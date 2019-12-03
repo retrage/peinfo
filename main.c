@@ -9,10 +9,10 @@ static void print_fhdr(FILE *stream, IMAGE_FILE_HEADER *fhdr)
     return;
 
   print_kv(stream, "Machine", &fhdr->Machine, FMT_HEX2);
-  print_kv(stream, "NumberOfSections", &fhdr->NumberOfSections, FMT_DEC);
-  print_kv(stream, "TimeDateStamp", &fhdr->TimeDateStamp, FMT_DEC);
+  print_kv(stream, "NumberOfSections", &fhdr->NumberOfSections, FMT_DEC2);
+  print_kv(stream, "TimeDateStamp", &fhdr->TimeDateStamp, FMT_DEC4);
   print_kv(stream, "PointerToSymbolTable", &fhdr->PointerToSymbolTable, FMT_HEX4);
-  print_kv(stream, "NumberOfSymbols", &fhdr->NumberOfSymbols, FMT_DEC);
+  print_kv(stream, "NumberOfSymbols", &fhdr->NumberOfSymbols, FMT_DEC4);
   print_kv(stream, "SizeOfOptionalHeader", &fhdr->SizeOfOptionalHeader, FMT_HEX2);
   print_kv(stream, "Characteristics", &fhdr->Characteristics, FMT_HEX2);
 }
@@ -23,8 +23,8 @@ static void print_opthdr_std(FILE *stream, OPT_HDR_STD *opthdr_std)
     return;
 
   print_kv(stream, "Magic", &opthdr_std->Magic, FMT_HEX2);
-  print_kv(stream, "MajorLinkerVersion", &opthdr_std->MajorLinkerVersion, FMT_DEC);
-  print_kv(stream, "MinorLinkerVersion", &opthdr_std->MinorLinkerVersion, FMT_DEC);
+  print_kv(stream, "MajorLinkerVersion", &opthdr_std->MajorLinkerVersion, FMT_DEC1);
+  print_kv(stream, "MinorLinkerVersion", &opthdr_std->MinorLinkerVersion, FMT_DEC1);
   print_kv(stream, "SizeOfCode", &opthdr_std->SizeOfCode, FMT_HEX4);
   print_kv(stream, "SizeOfInitializedData", &opthdr_std->SizeOfInitializedData, FMT_HEX4);
   print_kv(stream, "SizeOfUnnitializedData", &opthdr_std->SizeOfUninitializedData, FMT_HEX4);
