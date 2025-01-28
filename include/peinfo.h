@@ -1,11 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
 
 enum {
   FMT_NONE = 0,
