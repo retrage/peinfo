@@ -1,7 +1,14 @@
 /* SPDX-License-Identifier: MIT */
 
-#include "pe.h"
-#include "peinfo.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+
+#include "include/pe.h"
+#include "include/peinfo.h"
 
 static void print_fhdr(FILE *stream, IMAGE_FILE_HEADER *fhdr)
 {

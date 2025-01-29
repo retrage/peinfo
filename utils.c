@@ -1,6 +1,9 @@
 /* SPDX-License-Identifier: MIT */
 
-#include "peinfo.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "include/peinfo.h"
 
 static char *format_str(char *buf, size_t size, void *value, int format)
 {
